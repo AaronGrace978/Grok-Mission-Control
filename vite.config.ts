@@ -1,42 +1,49 @@
-import { defineConfig } from "vite";
-import react from "@vitejs/plugin-react";
-// @ts-expect-error type error without @types/node package
+import path from "node:path";
 import process from "node:process";
+import { defineConfig, type ProxyOptions } from "vite";
+import react from "@vitejs/plugin-react";
+import tailwindcss from "@tailwindcss/vite";
+
 const host = process.env.TAURI_DEV_HOST;
 
-// https://vite.dev/config/
-export default defineConfig(() => ({
-  plugins: [react()],
+// Browser mode talks to xAI through this proxy so the API key never hits a CORS wall.
+// Origin/Referer are stripped so the upstream sees a plain server-to-server request.
+const xaiProxy: Record<string, ProxyOptions> = {
+  "/api/xai": {
+    target: "https://api.x.ai",
+    changeOrigin: true,
+    secure: true,
+    rewrite: (p) => p.replace(/^\/api\/xai/, ""),
+    configure: (proxy) => {
+      proxy.on("proxyReq", (proxyReq) => {
+        proxyReq.removeHeader("origin");
+        proxyReq.removeHeader("referer");
+      });
+    },
+  },
+};
 
-  // Vite options tailored for Tauri development and only applied in `tauri dev` or `tauri build`
-  //
-  // 1. prevent Vite from obscuring rust errors
+export default defineConfig(() => ({
+  plugins: [react(), tailwindcss()],
+  resolve: {
+    alias: { "@": path.resolve(import.meta.dirname, "./src") },
+  },
   clearScreen: false,
-  // 2. tauri expects a fixed port, fail if that port is not available
   server: {
     port: 1420,
     strictPort: true,
-    host: host || false,
-    hmr: host
-      ? {
-          protocol: "ws",
-          host,
-          port: 1421,
-        }
-      : undefined,
-    watch: {
-      // 3. tell Vite to ignore watching `src-tauri`
-      ignored: ["**/src-tauri/**"],
-    },
-    proxy: {
-      '/api/xai': {
-        target: 'https://api.x.ai',
-        changeOrigin: true,
-        rewrite: (path) => path.replace(/^\/api\/xai/, ''),
-        headers: {
-          'Origin': 'https://api.x.ai'
-        }
-      }
-    }
+    host: host || "127.0.0.1",
+    hmr: host ? { protocol: "ws", host, port: 1421 } : undefined,
+    watch: { ignored: ["**/src-tauri/**"] },
+    proxy: xaiProxy,
+  },
+  preview: {
+    port: 1430,
+    host: "127.0.0.1",
+    proxy: xaiProxy,
+  },
+  build: {
+    target: "es2021",
+    chunkSizeWarningLimit: 2500,
   },
 }));
