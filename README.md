@@ -1,6 +1,18 @@
 # Grok Mission Control
 
+Grok Bot Hackathon Boston 10/09/2026
+
 A cinematic mission-control desktop app for a crewed Starship-class flight from **Earth to the Moon to Mars**, with **Grok** riding along as your AI co-pilot. Built for the grokbot Hackathon in Boston.
+
+![Liftoff](docs/screenshots/liftoff.png)
+![Lunar Earthrise](docs/screenshots/earthrise.png)
+![Mars aerocapture](docs/screenshots/aerocapture.png)
+
+## Downloads
+
+Installers for macOS (Apple silicon and Intel), Windows, and Linux, plus a Chrome/browser build, are published from the tag on the [releases page](https://github.com/AaronGrace978/Grok-Mission-Control/releases).
+
+The browser zip is the Vite production build. Unzip it and serve the folder (`npx serve .`) so Chrome can load it. Live Grok replies in the browser need the dev proxy (`npm run dev`) or the desktop app, which calls the xAI API from Rust.
 
 - **Real-time 3D:** Three.js / react-three-fiber with HDR bloom, ACES tone mapping, and a lens flare.
   - Textured Earth with clouds, night lights, ocean glint, and an atmosphere.
