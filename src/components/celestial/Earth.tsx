@@ -1,5 +1,5 @@
 import { useRef, useMemo } from 'react';
-import { useFrame, useLoader } from '@react-three/fiber';
+import { useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import { useMissionStore } from '../../store/missionStore';
 import { SCALE_FACTOR, BODY_DATA } from '../../utils/missionPhysics';

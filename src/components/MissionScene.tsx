@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react';
+import { useRef } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { Stars, PerspectiveCamera } from '@react-three/drei';
 import { EffectComposer, Bloom } from '@react-three/postprocessing';
@@ -9,7 +9,7 @@ import Moon from './celestial/Moon';
 import Mars from './celestial/Mars';
 import Rocket from './Rocket';
 import { useMissionStore } from '../store/missionStore';
-import { calculateRocketPosition, calculateTelemetry, SCALE_FACTOR, BODY_DATA } from '../utils/missionPhysics';
+import { calculateRocketPosition, calculateTelemetry } from '../utils/missionPhysics';
 
 export default function MissionScene() {
   const { missionTime, isPlaying, playbackSpeed, cameraView, updateMissionTime, updateTelemetry, currentPhase } = useMissionStore();
@@ -29,12 +29,6 @@ export default function MissionScene() {
       
       if (cameraRef.current) {
         const camera = cameraRef.current;
-        const earthAngle = (newTime * 0.000001) % (Math.PI * 2);
-        const earthPos = new THREE.Vector3(
-          Math.cos(earthAngle) * BODY_DATA.earth.orbitRadius * SCALE_FACTOR,
-          0,
-          Math.sin(earthAngle) * BODY_DATA.earth.orbitRadius * SCALE_FACTOR
-        );
         
         switch (cameraView) {
           case 'chase':

@@ -22,8 +22,8 @@ export default function Settings({ onClose }: SettingsProps) {
     const loadApiKey = async () => {
       if (window.__TAURI__) {
         try {
-          const { Store } = await import('@tauri-apps/plugin-store');
-          const store = new Store('settings.json');
+          const { load } = await import('@tauri-apps/plugin-store');
+          const store = await load('settings.json');
           const key = await store.get<string>('grokApiKey');
           if (key) setApiKey(key);
         } catch (e) {
@@ -40,8 +40,8 @@ export default function Settings({ onClose }: SettingsProps) {
   const handleSave = async () => {
     if (window.__TAURI__) {
       try {
-        const { Store } = await import('@tauri-apps/plugin-store');
-        const store = new Store('settings.json');
+        const { load } = await import('@tauri-apps/plugin-store');
+        const store = await load('settings.json');
         await store.set('grokApiKey', apiKey);
         await store.save();
       } catch (e) {

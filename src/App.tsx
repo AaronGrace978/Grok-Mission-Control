@@ -5,12 +5,10 @@ import HUD from './components/HUD';
 import GrokPanel from './components/GrokPanel';
 import BootSequence from './components/BootSequence';
 import Settings from './components/Settings';
-import { useMissionStore } from './store/missionStore';
 
 function App() {
   const [showBoot, setShowBoot] = useState(true);
   const [showSettings, setShowSettings] = useState(false);
-  const missionPhase = useMissionStore((state) => state.currentPhase);
 
   useEffect(() => {
     const timer = setTimeout(() => setShowBoot(false), 4000);

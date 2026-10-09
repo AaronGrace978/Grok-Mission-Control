@@ -31,7 +31,7 @@ const PHASE_TIMELINE = {
   'mars-orbit': 20044800,
 } as const;
 
-export const useMissionStore = create<MissionStore>((set, get) => ({
+export const useMissionStore = create<MissionStore>((set) => ({
   currentPhase: 'pre-launch',
   isPlaying: true,
   playbackSpeed: 1,
