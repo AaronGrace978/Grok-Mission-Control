@@ -94,6 +94,11 @@ export function TopBar({ tel }: { tel: TelemetrySample }) {
             </Tooltip>
           ))}
         </div>
+        <div className="md:hidden">
+          <IconToggle label={`Camera: ${VIEWS.find((v) => v.id === view)?.label}`} active onClick={() => setView(VIEWS[(VIEWS.findIndex((v) => v.id === view) + 1) % VIEWS.length].id)}>
+            <Camera className="size-4" />
+          </IconToggle>
+        </div>
         <IconToggle label={showLabels ? "Hide labels" : "Show labels"} active={showLabels} onClick={() => setShowLabels(!showLabels)}>
           <Tag className="size-4" />
         </IconToggle>

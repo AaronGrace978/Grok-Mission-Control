@@ -75,7 +75,7 @@ const DIRECTOR: Record<PhaseId, [number, Shot][]> = {
   ],
   aerocapture: [
     [0, { id: "aero-side", shot: { kind: "chase", back: -0.2, up: 0.35, side: 1, dist: 2.6 } }],
-    [0.62, { id: "aero-exit", shot: { kind: "chase", back: -0.85, up: 0.22, side: 0.55, dist: 2.4 } }],
+    [0.62, { id: "aero-exit", shot: { kind: "chase", back: -0.62, up: 0.72, side: 0.32, dist: 2.6 } }],
   ],
   mars: [
     [0, { id: "mars-chase", shot: { kind: "chase", back: -0.8, up: 0.45, side: 0.45, dist: 2.2 } }],

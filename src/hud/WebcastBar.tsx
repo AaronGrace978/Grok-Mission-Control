@@ -131,7 +131,7 @@ function Timeline({ tel }: { tel: TelemetrySample }) {
               <div className={cn("size-[9px] rounded-full border", done ? "border-white bg-white shadow-[0_0_8px_rgba(255,255,255,0.9)]" : "border-white/50 bg-black")} />
               <div
                 className={cn(
-                  "pointer-events-none absolute left-1/2 -translate-x-1/2 whitespace-nowrap font-display text-[9px] font-semibold uppercase tracking-[0.14em]",
+                  "pointer-events-none absolute left-1/2 hidden -translate-x-1/2 whitespace-nowrap font-display text-[9px] font-semibold uppercase tracking-[0.14em] sm:block",
                   i % 2 === 0 ? "bottom-4" : "top-4",
                   done ? "text-white/85" : "text-white/40",
                 )}
