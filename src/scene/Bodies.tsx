@@ -62,6 +62,8 @@ export function Earth({ q }: { q: QualityConfig }) {
           specMap: { value: spec },
           sunDir: { value: sunDir },
           cloudShift: { value: 0 },
+          lowCam: { value: 0 },
+          hazeColor: { value: new THREE.Color(0.19, 0.31, 0.5) },
         },
       }),
     [day, night, clouds, spec, sunDir],
@@ -90,6 +92,7 @@ export function Earth({ q }: { q: QualityConfig }) {
     cloudMat.uniforms.cloudShift.value = shift;
     const camAlt = camera.position.distanceTo(EARTH_POS) - R_EARTH;
     atmo.uniforms.intensity.value = 1.6 * THREE.MathUtils.smoothstep(camAlt, 0.12, 0.6);
+    surface.uniforms.lowCam.value = 1 - THREE.MathUtils.smoothstep(camAlt, 0.004, 0.09);
   });
 
   const seg = q.sphereSegments;
@@ -152,7 +155,13 @@ function RockyBody({
   );
   const base = useMemo(() => orient ?? new THREE.Quaternion(), [orient]);
   const spinQ = useMemo(() => new THREE.Quaternion(), []);
+  const camera = useThree((s) => s.camera);
   useFrame(() => {
+    if (atmoMat && atmosphere) {
+      const shell = (atmosphere.ratio - 1) * radius;
+      const camAlt = camera.position.distanceTo(position) - radius;
+      atmoMat.uniforms.intensity.value = atmosphere.intensity * THREE.MathUtils.smoothstep(camAlt, shell * 0.8, shell * 4);
+    }
     if (!mesh.current) return;
     spinQ.setFromAxisAngle(THREE.Object3D.DEFAULT_UP, sim.t * spin);
     mesh.current.quaternion.copy(base).multiply(spinQ);

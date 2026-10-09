@@ -116,7 +116,7 @@ const mHat = MOON_POS.clone().normalize();
 type PropSeg = { phase: PhaseId; u0: number; u1: number; to: number };
 const SHIP_PROP: PropSeg[] = [
   { phase: "ascent", u0: 0.533, u1: 0.997, to: 0.09 },
-  { phase: "leo", u0: 0.42, u1: 0.76, to: 1 },
+  { phase: "leo", u0: 0.2, u1: 0.76, to: 1 },
   { phase: "tli", u0: 0.03, u1: 0.97, to: 0.74 },
   { phase: "coast", u0: 0.44, u1: 0.475, to: 0.735 },
   { phase: "lunar", u0: 0.0, u1: 0.075, to: 0.66 },
@@ -293,8 +293,8 @@ export function computeFrame(t: number, f: SimFrame): SimFrame {
   // --- Orbital tanker (LEO prop transfer), docked tail-to-tail.
   f.tankerVisible = phase.id === "leo" && u > 0.03 && u < 0.99;
   if (f.tankerVisible) {
-    const approach = 1 - smoothstep(0.04, 0.36, u);
-    const depart = smoothstep(0.78, 0.98, u);
+    const approach = 1 - smoothstep(0.03, 0.15, u);
+    const depart = smoothstep(0.8, 0.98, u);
     const gapM = 9.5 + 520 * approach * approach + 450 * depart * depart;
     f.tankerPos.copy(f.shipPos).addScaledVector(f.forward, -gapM * SCALE);
     const belly = tmpB.set(0, 0, 1).applyQuaternion(f.shipQuat);
@@ -319,7 +319,7 @@ export function computeFrame(t: number, f: SimFrame): SimFrame {
   tel.q = null;
   tel.boosterProp = null;
   tel.gLoad = 0;
-  tel.docked = phase.id === "leo" && u > 0.36 && u < 0.78;
+  tel.docked = phase.id === "leo" && u > 0.15 && u < 0.8;
   tel.comms = "NOMINAL";
 
   const sceneDirFromEarth = tmpA.copy(f.shipPos).normalize();

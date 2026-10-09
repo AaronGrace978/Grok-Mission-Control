@@ -5,20 +5,22 @@
   "identifier": "com.grokmission.control",
   "build": {
     "beforeDevCommand": "npm run dev",
-    "devUrl": "http://localhost:1420",
+    "devUrl": "http://127.0.0.1:1420",
     "beforeBuildCommand": "npm run build",
     "frontendDist": "../dist"
   },
   "app": {
-    "withGlobalTauri": true,
     "windows": [
       {
+        "label": "main",
         "title": "Grok Mission Control",
-        "width": 1920,
-        "height": 1080,
-        "fullscreen": false,
+        "width": 1600,
+        "height": 960,
+        "minWidth": 1024,
+        "minHeight": 640,
         "resizable": true,
-        "center": true
+        "center": true,
+        "backgroundColor": "#000000"
       }
     ],
     "security": {
@@ -28,20 +30,8 @@
   "bundle": {
     "active": true,
     "targets": "all",
-    "icon": [
-      "icons/32x32.png",
-      "icons/128x128.png",
-      "icons/128x128@2x.png",
-      "icons/icon.icns",
-      "icons/icon.ico"
-    ]
-  },
-  "plugins": {
-    "http": {
-      "scope": ["https://api.x.ai/*"]
-    },
-    "store": {
-      "enabled": true
-    }
+    "category": "Education",
+    "shortDescription": "Earth to Moon to Mars mission control with a Grok co-pilot",
+    "icon": ["icons/32x32.png", "icons/128x128.png", "icons/128x128@2x.png", "icons/icon.icns", "icons/icon.ico"]
   }
 }

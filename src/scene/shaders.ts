@@ -25,6 +25,8 @@ export const earthFragment = /* glsl */ `
   uniform sampler2D specMap;
   uniform vec3 sunDir;
   uniform float cloudShift;
+  uniform float lowCam;
+  uniform vec3 hazeColor;
   varying vec2 vUv;
   varying vec3 vNormalW;
   varying vec3 vPosW;
@@ -51,7 +53,7 @@ export const earthFragment = /* glsl */ `
     // Sun glint on oceans.
     vec3 H = normalize(L + V);
     float glint = pow(max(dot(N, H), 0.0), 90.0) * 2.6 + pow(max(dot(N, H), 0.0), 12.0) * 0.12;
-    col += vec3(1.0, 0.93, 0.82) * glint * ocean * (1.0 - cloudShadow) * smoothstep(0.0, 0.15, NdL);
+    col += vec3(1.0, 0.93, 0.82) * glint * ocean * (1.0 - cloudShadow) * smoothstep(0.0, 0.15, NdL) * (1.0 - 0.9 * lowCam);
 
     // City lights on the night side.
     float nightMask = 1.0 - smoothstep(-0.18, 0.06, NdL);
@@ -63,6 +65,11 @@ export const earthFragment = /* glsl */ `
     vec3 atmo = mix(vec3(1.0, 0.45, 0.2), vec3(0.32, 0.62, 1.0), smoothstep(-0.1, 0.35, NdL));
     col += atmo * fres * smoothstep(-0.3, 0.4, NdL) * 1.6;
     col = mix(col, col * vec3(0.82, 0.9, 1.08) + vec3(0.01, 0.025, 0.06) * light, 0.5);
+
+    // Aerial perspective when the camera is near the ground (scene units: 10 = Earth radius).
+    float dist = length(cameraPosition - vPosW);
+    float fog = (1.0 - exp(-dist / 0.035)) * lowCam;
+    col = mix(col, hazeColor * smoothstep(-0.1, 0.3, NdL), clamp(fog, 0.0, 0.92));
 
     gl_FragColor = vec4(col, 1.0);
     #include <tonemapping_fragment>

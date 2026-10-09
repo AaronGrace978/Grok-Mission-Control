@@ -29,7 +29,6 @@ export function Overlays() {
   const cockpit = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    let raf = 0;
     const place = (el: HTMLElement | null, p: ScreenPoint, alpha: number) => {
       if (!el) return;
       const show = p.visible && alpha > 0.01;
@@ -37,7 +36,6 @@ export function Overlays() {
       if (show) el.style.transform = `translate3d(${p.x}px, ${p.y}px, 0)`;
     };
     const loop = () => {
-      raf = requestAnimationFrame(loop);
       const ui = useUi.getState();
       const q = QUALITY_CONFIG[ui.quality];
 
@@ -71,8 +69,8 @@ export function Overlays() {
       if (plasma.current) plasma.current.style.opacity = String(tel.plasma * (ui.view === "cockpit" ? 1 : 0.55));
       if (cockpit.current) cockpit.current.style.opacity = ui.view === "cockpit" ? "1" : "0";
     };
-    raf = requestAnimationFrame(loop);
-    return () => cancelAnimationFrame(raf);
+    overlay.listeners.add(loop);
+    return () => void overlay.listeners.delete(loop);
   }, []);
 
   return (

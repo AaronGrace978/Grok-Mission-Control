@@ -2,5 +2,5 @@
 #![cfg_attr(not(debug_assertions), windows_subsystem = "windows")]
 
 fn main() {
-    __rc_lib::run()
+    grok_mission_control_lib::run()
 }

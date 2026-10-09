@@ -13,7 +13,8 @@ export const R_MARS = 5.32;
 
 export const EARTH_POS = new Vector3(0, 0, 0);
 export const MOON_POS = new Vector3(118, 14, -96);
-export const MARS_POS = new Vector3(1300, 120, -1450);
+/** Placed so the arrival leg runs ~60° off the Sun line: aerocapture over the dayside, exit at the terminator. */
+export const MARS_POS = new Vector3(1463, 239, 1078);
 export const SUN_DIR = new Vector3(-0.2, 0.25, 0.95).normalize();
 export const SUN_DISTANCE = 14000;
 export const SUN_POS = SUN_DIR.clone().multiplyScalar(SUN_DISTANCE);

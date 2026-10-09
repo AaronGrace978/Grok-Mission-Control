@@ -33,7 +33,7 @@ const newPose = (): Pose => ({ pos: new THREE.Vector3(), look: new THREE.Vector3
 type ShotKind =
   | { kind: "ground"; tele: boolean }
   | { kind: "chase"; back: number; up: number; side: number; dist: number; ahead?: "moon" | "mars" }
-  | { kind: "lookback"; body: "earth" | "moon" }
+  | { kind: "lookback"; body: "earth" | "moon" | "mars" }
   | { kind: "dock" }
   | { kind: "overview" }
   | { kind: "cockpit" };
@@ -53,14 +53,14 @@ const DIRECTOR: Record<PhaseId, [number, Shot][]> = {
   ],
   leo: [
     [0, { id: "leo-wide", shot: { kind: "chase", back: -0.6, up: 0.55, side: 0.6, dist: 5 } }],
-    [0.12, { id: "dock", shot: { kind: "dock" } }],
-    [0.8, { id: "leo-chase", shot: { kind: "chase", back: -0.8, up: 0.4, side: 0.45, dist: 2.2 } }],
+    [0.025, { id: "dock", shot: { kind: "dock" } }],
+    [0.82, { id: "leo-chase", shot: { kind: "chase", back: -0.8, up: 0.4, side: 0.45, dist: 2.2 } }],
   ],
   tli: [[0, { id: "tli", shot: { kind: "chase", back: -0.9, up: 0.28, side: 0.42, dist: 1.8 } }]],
   coast: [
     [0, { id: "earth-back", shot: { kind: "lookback", body: "earth" } }],
     [0.32, { id: "cis-over", shot: { kind: "overview" } }],
-    [0.7, { id: "to-moon", shot: { kind: "chase", back: -0.9, up: 0.2, side: 0.25, dist: 2.2, ahead: "moon" } }],
+    [0.7, { id: "to-moon", shot: { kind: "lookback", body: "moon" } }],
   ],
   lunar: [
     [0, { id: "loi", shot: { kind: "chase", back: -0.75, up: 0.5, side: 0.5, dist: 2.2 } }],
@@ -71,15 +71,15 @@ const DIRECTOR: Record<PhaseId, [number, Shot][]> = {
   cruise: [
     [0, { id: "moon-back", shot: { kind: "lookback", body: "moon" } }],
     [0.25, { id: "helio-over", shot: { kind: "overview" } }],
-    [0.62, { id: "to-mars", shot: { kind: "chase", back: -0.9, up: 0.22, side: 0.3, dist: 2.4, ahead: "mars" } }],
+    [0.62, { id: "to-mars", shot: { kind: "lookback", body: "mars" } }],
   ],
   aerocapture: [
     [0, { id: "aero-side", shot: { kind: "chase", back: -0.2, up: 0.35, side: 1, dist: 2.6 } }],
-    [0.62, { id: "aero-chase", shot: { kind: "chase", back: -0.85, up: 0.45, side: 0.4, dist: 2.3 } }],
+    [0.62, { id: "aero-exit", shot: { kind: "chase", back: -0.85, up: 0.22, side: 0.55, dist: 2.4 } }],
   ],
   mars: [
     [0, { id: "mars-chase", shot: { kind: "chase", back: -0.8, up: 0.45, side: 0.45, dist: 2.2 } }],
-    [0.45, { id: "mars-over", shot: { kind: "overview" } }],
+    [0.3, { id: "mars-over", shot: { kind: "overview" } }],
   ],
 };
 
@@ -261,7 +261,7 @@ export function CameraRig() {
           break;
         }
         case "lookback": {
-          const body = s.body === "earth" ? EARTH_POS : MOON_POS;
+          const body = s.body === "earth" ? EARTH_POS : s.body === "moon" ? MOON_POS : MARS_POS;
           const toBody = tmp.v.copy(body).sub(C).normalize();
           const perp = tmp.w.copy(U).addScaledVector(toBody, -U.dot(toBody)).normalize();
           out.pos.copy(C).addScaledVector(toBody, -shipLen * 2.6 * usr.zoom).addScaledVector(perp, shipLen * 0.7).addScaledVector(S, shipLen * 0.6);

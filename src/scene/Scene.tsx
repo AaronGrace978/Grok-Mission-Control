@@ -53,10 +53,10 @@ function Lights() {
   return (
     <>
       <directionalLight position={sunPos} intensity={3.2} color="#fff6ea" />
-      <ambientLight intensity={0.035} color="#9fb4ff" />
+      <ambientLight intensity={0.03} color="#c9d2e3" />
       <Environment resolution={128} frames={1} environmentIntensity={0.55}>
         <Lightformer form="rect" intensity={6} color="#fff3e2" position={sunPos.clone().normalize().multiplyScalar(10)} scale={[6, 6, 1]} target={[0, 0, 0]} />
-        <Lightformer form="rect" intensity={0.6} color="#6f8fd6" position={[0, -10, 0]} scale={[20, 20, 1]} target={[0, 0, 0]} />
+        <Lightformer form="rect" intensity={0.35} color="#9aa6bb" position={[0, -10, 0]} scale={[20, 20, 1]} target={[0, 0, 0]} />
         <Lightformer form="ring" intensity={1.2} color="#ffffff" position={[-8, 4, -6]} scale={4} target={[0, 0, 0]} />
       </Environment>
     </>

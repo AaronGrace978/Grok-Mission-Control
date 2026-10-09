@@ -25,6 +25,8 @@ export const overlay = {
   moon: mk(),
   mars: mk(),
   ship: mk(),
+  /** Called right after projection inside the render loop so DOM overlays never lag the canvas. */
+  listeners: new Set<() => void>(),
 };
 
 const BODIES = [
@@ -79,6 +81,7 @@ export function OverlayProbe() {
     overlay.earth.strength = THREE.MathUtils.smoothstep(overlay.earth.dist, 20, 60);
     overlay.moon.strength = THREE.MathUtils.smoothstep(overlay.moon.dist, 8, 30);
     overlay.mars.strength = THREE.MathUtils.smoothstep(overlay.mars.dist, 14, 50);
+    overlay.listeners.forEach((l) => l());
   });
   return null;
 }

@@ -35,7 +35,7 @@ function describeHttpError(status: number, body: string) {
   } catch {
     /* plain text body */
   }
-  if (status === 401 || status === 403) return `Authentication failed (${status}). Check the API key in Settings. ${detail}`.trim();
+  if (status === 401 || status === 403 || /api key/i.test(detail)) return `Authentication failed (${status}). Check the API key in Settings. ${detail}`.trim();
   if (status === 404) return `Model or endpoint not found (404). Try another model in Settings. ${detail}`.trim();
   if (status === 429) return `Rate limited (429). Give it a moment. ${detail}`.trim();
   return `xAI API error ${status}: ${detail || "no details"}`;
@@ -153,7 +153,7 @@ export async function streamGrok(o: StreamOptions) {
   } catch (e) {
     if (received || o.signal?.aborted) throw e;
     const status = e instanceof GrokError ? e.status : undefined;
-    if (status === 401 || status === 403 || status === 429) throw e;
+    if (status === 401 || status === 403 || status === 429 || (e instanceof Error && /api key/i.test(e.message))) throw e;
     await run(wrapped, "responses");
   }
 }

@@ -1,176 +1,107 @@
 # Grok Mission Control
 
-A visually stunning desktop application for simulating a crewed rocket mission from Earth to the Moon and then on to Mars, featuring real-time 3D graphics and an AI co-pilot powered by Grok.
+A cinematic mission-control desktop app for a crewed Starship-class flight from **Earth to the Moon to Mars**, with **Grok** riding along as your AI co-pilot. Built for the grokbot Hackathon in Boston.
 
-Built for the Grokbot Hackathon in Boston.
+- **Real-time 3D:** Three.js / react-three-fiber with HDR bloom, ACES tone mapping, and a lens flare.
+  - Textured Earth with clouds, night lights, ocean glint, and an atmosphere.
+  - The Moon, Mars, the Sun, and a Milky Way skybox.
+- **Procedural vehicles:**
+  - A Starship-style ship and a 33-engine booster.
+  - Hot staging, booster boostback, and an orbital tanker for propellant transfer.
+  - A launch tower with deluge steam.
+  - GPU exhaust plumes with shock diamonds, plus Mars aerocapture plasma.
+- **The full mission:** terminal count, liftoff, max-Q, hot staging, LEO prop transfer, TLI, translunar coast, far-side lunar orbit insertion (with loss of signal and Earthrise), TMI, a 259-day Hohmann cruise, belly-first Mars aerocapture, and Mars orbit.
+- **Webcast-style HUD:**
+  - A big T+ clock, speed and altitude gauges, and live engine-cluster diagrams.
+  - A milestone scrubber with play/pause and 0.5x–8x speed.
+  - Telemetry, a cislunar-to-heliocentric nav map, and milestone toasts.
+  - All telemetry comes from real physics and is labeled **simulated**: ascent profile, vis-viva, the Moon's sphere of influence, a heliocentric Hohmann transfer, light-time, g-load, and dynamic pressure.
+- **Camera views:**
+  - Director (an auto-cut cinematic schedule), Chase, Orbital overview, and Cockpit.
+  - Drag to orbit, scroll to zoom.
+- **Grok co-pilot:**
+  - Streams from the xAI API. Every request carries a system prompt built from the live phase and telemetry.
+  - Calls out milestones even without an API key.
+- **Polish:** boot sequence with a GO/NO-GO poll, procedural ambient audio (cabin drone, throttle-driven engine rumble, chimes), auto quality scaling (Low/Medium/High/Ultra), and a responsive layout.
 
-## Features
+## Quick start (browser)
 
-- **Real-time 3D Mission Simulation**: Watch a Starship-style rocket travel from Earth through lunar orbit to Mars
-- **High-end Graphics**: Three.js-powered 3D rendering with bloom effects, particle systems, and procedurally generated planet textures
-- **Mission Phases**: 
-  - Pre-launch
-  - Launch & Ascent
-  - Low Earth Orbit
-  - Trans-Lunar Injection
-  - Lunar Approach & Orbit
-  - Trans-Mars Injection
-  - Mars Cruise Phase
-  - Mars Approach & Orbit
-- **Interactive HUD**: Real-time telemetry display including velocity, distance, fuel levels, and mission elapsed time
-- **Timeline Controls**: Play/pause, speed controls (1x to 10000x), and scrubber to jump to any mission phase
-- **Camera Views**: Chase, Orbital, and Cockpit perspectives
-- **Grok AI Co-pilot**: Chat with an AI assistant that's aware of your current mission status and can answer questions about the mission
-- **Grok-themed Design**: Near-black backgrounds, crisp white and cool-grey type, glowing accents, glassy panels
-
-## Tech Stack
-
-- **Frontend**: React + TypeScript + Vite
-- **3D Graphics**: Three.js with react-three-fiber, react-three/drei, and postprocessing
-- **Desktop**: Tauri v2 (Rust backend)
-- **State Management**: Zustand
-- **AI Integration**: xAI Grok API (OpenAI-compatible)
-
-## Prerequisites
-
-### For Browser Mode (Easiest)
-- Node.js 18+ and npm
-
-### For Desktop Build (Tauri)
-- Node.js 18+ and npm
-- Rust toolchain
-- Platform-specific dependencies:
-  - **Linux**: `webkit2gtk`, `rsvg2` - see [Tauri Linux prerequisites](https://tauri.app/guides/prerequisites/#linux)
-  - **macOS**: Xcode Command Line Tools
-  - **Windows**: WebView2, Visual Studio Build Tools
-
-## Setup
-
-1. **Install dependencies:**
-   ```bash
-   npm install
-   ```
-
-2. **Set up your Grok API Key:**
-   - Get an API key from [console.x.ai](https://console.x.ai)
-   - Launch the app and click the Settings (⚙️) button
-   - Enter your API key and save
-   - The key is stored locally (Tauri store in desktop mode, localStorage in browser mode)
-
-## Running the App
-
-### Browser Mode (Recommended for demo)
 ```bash
+npm install
 npm run dev
 ```
-Open your browser to `http://localhost:1420`
 
-### Desktop Mode (Tauri)
+Open http://127.0.0.1:1420 and click **Enter Mission Control**.
+
+## Desktop app (Tauri v2)
+
 ```bash
-npm run tauri dev
+npm run tauri dev     # native window with hot reload
+npm run tauri build   # release bundles in src-tauri/target/release/bundle/
 ```
 
-### Build Desktop App
+Requirements:
+
+- Rust stable (1.85 or newer). Run `rustup update stable` if needed.
+- The [Tauri prerequisites](https://v2.tauri.app/start/prerequisites/) for your OS. On Debian/Ubuntu:
+
 ```bash
-npm run tauri build
-```
-The built application will be in `src-tauri/target/release/`
-
-## Usage
-
-1. **Launch the application** - enjoy the boot sequence
-2. **Watch the mission unfold** - the simulation starts automatically
-3. **Interact with controls:**
-   - Use the timeline scrubber to jump to different mission phases
-   - Play/pause the simulation
-   - Adjust playback speed (1x to 10000x)
-   - Switch camera views (Chase, Orbital, Cockpit)
-4. **Chat with Grok** - ask questions about the mission in the right panel
-5. **Monitor telemetry** - view real-time mission data in the HUD
-
-## Mission Timeline
-
-- **T+0:10**: Launch
-- **T+10:00**: Low Earth Orbit
-- **T+15:00**: Trans-Lunar Injection
-- **T+64:00:00**: Lunar Approach
-- **T+72:00:00**: Lunar Orbit
-- **T+96:00:00**: Trans-Mars Injection
-- **T+180d**: Mars Cruise
-- **T+231d**: Mars Approach
-- **T+232d**: Mars Orbit
-
-(Timeline compressed for demonstration; actual missions would take much longer)
-
-## Planet Textures
-
-This application uses procedurally generated textures for all celestial bodies:
-- **Sun**: Glowing yellow-orange sphere with atmospheric halo
-- **Earth**: Blue and green gradients with white cloud patches
-- **Moon**: Grey surface with darker craters
-- **Mars**: Red-orange surface with brown geological features
-
-All textures are generated at runtime using Canvas 2D API, ensuring no external texture dependencies.
-
-## Architecture
-
-### Frontend Structure
-```
-src/
-├── components/
-│   ├── celestial/      # Sun, Earth, Moon, Mars components
-│   ├── MissionScene.tsx # Main 3D scene orchestrator
-│   ├── Rocket.tsx       # Rocket model with exhaust particles
-│   ├── HUD.tsx          # Heads-up display with telemetry
-│   ├── GrokPanel.tsx    # AI chat interface
-│   ├── BootSequence.tsx # Startup animation
-│   └── Settings.tsx     # API key configuration
-├── store/
-│   └── missionStore.ts  # Zustand state management
-├── utils/
-│   └── missionPhysics.ts # Mission simulation calculations
-├── types/
-│   └── mission.ts       # TypeScript type definitions
-├── App.tsx              # Root component
-└── main.tsx            # React entry point
+sudo apt install libwebkit2gtk-4.1-dev build-essential curl wget file libxdo-dev libssl-dev libayatana-appindicator3-dev librsvg2-dev
 ```
 
-### Tauri Backend
-```
-src-tauri/
-├── src/
-│   └── lib.rs          # Rust API handlers (Grok chat)
-├── Cargo.toml          # Rust dependencies
-└── tauri.conf.json     # Tauri configuration
-```
+## Connecting Grok (xAI API key)
 
-## API Integration
+1. Create a key at [console.x.ai](https://console.x.ai).
+2. In the app, open **Settings** (gear icon) and go to the **Grok** tab. Paste the key, then click **Test connection** and **Save**.
+3. Talk to Grok in the right-hand panel. The quick chips (Status report, What's next?, ...) are one-click prompts.
 
-The app calls the xAI Grok API with current mission telemetry in the system prompt:
-- **Tauri mode**: API calls made from Rust backend (no CORS issues)
-- **Browser mode**: API calls proxied through Vite dev server
+Where the key goes:
 
-Default model: `grok-beta`
+- **The key is never hardcoded or committed.** It is stored only on your device:
+  - Desktop: the Tauri store plugin (`settings.json` in the app data directory).
+  - Browser: `localStorage`.
+- **Desktop requests** go from the native Rust backend (`src-tauri/src/lib.rs`, the `grok_stream` command), which streams tokens back over a Tauri channel. The webview never needs CORS access to `api.x.ai`.
+- **Browser requests** go through the Vite dev/preview proxy (`/api/xai` → `https://api.x.ai`). A static `dist/` deploy has no proxy, so use `npm run dev`, `npm run preview`, or the desktop app.
+
+**Model and API.** The default model is `grok-4.7`. Settings also offers other presets or any custom model id. The API setting **Auto** tries Chat Completions (`/v1/chat/completions`, streaming) first. If the model or endpoint rejects that before any text arrives, it falls back to the Responses API (`/v1/responses`). You can force either one.
+
+**Without a key**, Grok runs in offline mode. It still narrates every milestone and answers with a telemetry readout.
+
+## Controls
+
+| Key | Action |
+| --- | --- |
+| `Space` | Play / pause |
+| `←` `→` | Previous / next major milestone |
+| `1`–`4` | Director, Chase, Orbital, Cockpit camera |
+| `G` | Toggle the Grok panel |
+| Drag / scroll | Orbit / zoom the camera (switches Director to Chase) |
 
 ## Performance
 
-- Target: 60 FPS on RTX 4060-class GPU
-- Degrades gracefully on lower-end hardware
-- Quality settings available in future updates
+The target is 60 fps on RTX 4060-class GPUs at **High**. **Ultra** adds 4x MSAA, more stars, more particles, and denser spheres. **Auto** (the default) watches the frame rate, steps between Low, Medium, and High, and remembers any manual choice. Low turns off post-processing and uses 2k textures.
 
-## Development Notes
+## Architecture
 
-- All celestial body positions are calculated based on mission elapsed time
-- Physics are simplified for demonstration purposes (not orbital mechanics accuracy)
-- Particle effects used for rocket exhaust during powered flight phases
-- Bloom post-processing adds realistic glow to Sun, Earth atmosphere, and engine exhaust
+```
+src/
+  sim/        mission model: timeline + events, trajectory geometry, heliocentric Hohmann model,
+              per-frame telemetry (frame.ts), and a mutable clock singleton (no React re-renders per frame)
+  scene/      r3f scene: bodies + shaders, vehicles (ship, booster, tanker, launch site, plumes),
+              trajectory, director camera rig, post-processing, screen-space overlay probe
+  hud/        webcast HUD: top bar, telemetry, nav map, gauges + timeline, toasts, labels + lens flare
+  grok/       co-pilot panel, chat store, system prompt + offline callouts
+  lib/        xAI streaming client (SSE, chat → responses fallback), audio, formatting
+src-tauri/    Rust backend: streaming grok_stream / grok_cancel commands, store plugin
+```
 
-## License
+- The scene uses a logarithmic depth buffer and a dynamic near plane. That lets a 50 m ship and a 3,390 km planet render in the same frame without z-fighting.
+- Planet distances are compressed for the camera, but the numbers in the HUD come from real orbital mechanics in kilometres.
 
-Built for the Grokbot Hackathon. All code is original except for:
-- Three.js and React libraries (MIT)
-- Planet textures generated procedurally (no external assets)
+## Credits and licenses
 
-## Credits
+- Planet, Moon, Sun, and Milky Way textures: [Solar System Scope](https://www.solarsystemscope.com/textures/), based on NASA imagery, licensed [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/). The files are in `public/textures/`.
+- Vehicles, launch site, plumes, HUD, the mission emblem, and the Grok core mark are procedural or original to this project. No official logos or trademarked artwork are used.
+- Fonts: Barlow, Barlow Condensed, and JetBrains Mono (SIL Open Font License) via Fontsource.
 
-Created for the Grokbot Hackathon in Boston, October 9, 2026
+Fan-made hackathon project. Not affiliated with or endorsed by SpaceX or xAI. All telemetry is simulated.
